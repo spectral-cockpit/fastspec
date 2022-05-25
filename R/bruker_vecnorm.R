@@ -5,11 +5,25 @@
 # Bruker DE?)
 bruker_vecnorm <- function(x) {
   magic <- -1L
-  x_mcent <- sweep(x = x, MARGIN = 1, rowMeans(x, na.rm = TRUE), "-")
-  x_mcent_vecnorm <- magic * sweep(
-    x = x_mcent,
+  x_cent <- sweep(x = x, MARGIN = 1, rowMeans(x, na.rm = TRUE), "-")
+  x_cent_vecnorm <- magic * sweep(
+    x = x_cent,
     MARGIN = 1,
     apply(X = x, MARGIN = 1, FUN = function(x) sqrt(sum(x^2))), "/"
   )
-  return(x_mcent_vecnorm)
+  return(x_cent_vecnorm)
+}
+
+bruker_vecnorm_tra <- function(x) {
+  stopifnot(
+    is.data.frame(x) || is.matrix(x)
+  )
+  magic <- -1L
+  x_cent <- collapse::fwithin(x)
+  x_cent_vecnorm <- magic * collapse::TRA(
+    x_cent,
+    function(x) sqrt(sum(x^2)),
+    "/"
+  )
+  return(x_cent_vecnorm)
 }
